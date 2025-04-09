@@ -35,3 +35,10 @@ plt.imshow(img)
 plt.axis('off')
 plt.title('YOLOv8 Detection Result')
 plt.show()
+1.jpg(image/jpeg) - 139900 bytes, last modified: 2025. 4. 9. - 100% done
+Saving 1.jpg to 1 (2).jpg
+Downloading https://github.com/ultralytics/assets/releases/download/v8.3.0/yolov8n.pt to '/content/yolov8n.pt'...
+100%|██████████| 6.25M/6.25M [00:00<00:00, 115MB/s]
+
+image 1/1 /content/1.jpg: 448x640 11 persons, 1 car, 1 truck, 2 backpacks, 5 handbags, 38.7ms
+Speed: 13.0ms preprocess, 38.7ms inference, 335.7ms postprocess per image at shape (1, 3, 448, 640)
