@@ -5,7 +5,7 @@
     "colab": {
       "provenance": [],
       "gpuType": "T4",
-      "authorship_tag": "ABX9TyO3NfR3Qqtm6lXM5Es6OYXe",
+      "authorship_tag": "ABX9TyM3EVz+zXxmxh9tpB5U+XQ/",
       "include_colab_link": true
     },
     "kernelspec": {
@@ -25,8 +25,67 @@
         "colab_type": "text"
       },
       "source": [
-        "<a href=\"https://colab.research.google.com/github/yesungman/yolov8/blob/main/Untitled0.ipynb\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+        "<a href=\"https://colab.research.google.com/github/yesungman/yolov8/blob/main/yolov8_image.jpynb\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
       ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# 1. 필요한 라이브러리 설치\n",
+        "!pip install ultralytics pytube opencv-python\n",
+        "\n",
+        "# 2. YOLOv8 불러오기\n",
+        "from ultralytics import YOLO\n",
+        "import cv2\n",
+        "import os\n",
+        "from pytube import YouTube\n",
+        "\n",
+        "# 3. 경로 설정\n",
+        "video_url = 'https://www.youtube.com/watch?v=YOUR_VIDEO_ID'  # 🔁 https://www.youtube.com/shorts/782b1vznIwA\n",
+        "model_path = '/content/yolov8x.pt'\n",
+        "video_path = '/content/input.mp4'\n",
+        "output_path = '/content/output.mp4'\n",
+        "\n",
+        "# 4. 유튜브 영상 다운로드\n",
+        "yt = YouTube(video_url)\n",
+        "stream = yt.streams.filter(file_extension='mp4', progressive=True).order_by('resolution').desc().first()\n",
+        "stream.download(filename='input.mp4', output_path='/content')\n",
+        "\n",
+        "# 5. YOLO 모델 로드\n",
+        "model = YOLO(model_path)\n",
+        "\n",
+        "# 6. 영상 열기\n",
+        "cap = cv2.VideoCapture(video_path)\n",
+        "width  = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))\n",
+        "height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))\n",
+        "fps    = cap.get(cv2.CAP_PROP_FPS)\n",
+        "\n",
+        "# 7. 저장용 VideoWriter 설정\n",
+        "fourcc = cv2.VideoWriter_fourcc(*'mp4v')\n",
+        "out = cv2.VideoWriter(output_path, fourcc, fps, (width, height))\n",
+        "\n",
+        "# 8. 프레임별 객체 인식 및 저장\n",
+        "while cap.isOpened():\n",
+        "    ret, frame = cap.read()\n",
+        "    if not ret:\n",
+        "        break\n",
+        "\n",
+        "    results = model.predict(frame, imgsz=640, conf=0.3)\n",
+        "    annotated_frame = results[0].plot()  # 시각화된 결과 가져오기\n",
+        "    out.write(annotated_frame)\n",
+        "\n",
+        "cap.release()\n",
+        "out.release()\n",
+        "\n",
+        "# 9. 코랩에서 결과 영상 확인\n",
+        "from IPython.display import Video\n",
+        "Video(output_path, embed=True)\n"
+      ],
+      "metadata": {
+        "id": "qC1opPVtgHLf"
+      },
+      "execution_count": null,
+      "outputs": []
     },
     {
       "cell_type": "markdown",
@@ -85,7 +144,7 @@
         "id": "fNjbus3JSLaB",
         "outputId": "38d7dd47-001d-4fd7-ada5-7bb9b4d166ed"
       },
-      "execution_count": 2,
+      "execution_count": null,
       "outputs": [
         {
           "output_type": "stream",
